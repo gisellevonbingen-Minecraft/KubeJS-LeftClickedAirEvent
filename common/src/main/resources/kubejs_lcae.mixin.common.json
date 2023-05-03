@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "giselle.kubejs_lcae.common.mixin",
+	"minVersion": "0.8.5",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"minecraft.PlayerConnectionMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"refmap": "kubejs_lcae.mixin.refmap.json"
+}

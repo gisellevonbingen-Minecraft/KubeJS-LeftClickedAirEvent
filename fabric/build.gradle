@@ -1,0 +1,69 @@
+plugins {
+    id "fabric-loom" version "1.0-SNAPSHOT"
+}
+ 
+version = "fabric-${rootProject.mc_version}-${rootProject.mod_version}"
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "../common/src/main/java"
+        }
+
+        resources {
+            srcDirs += "src/generated/resources"
+            srcDirs += "../common/src/main/resources"
+            srcDirs += "../common/src/generated/resources"
+            exclude ".cache"
+        }
+    }
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("fabric_client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+        server {
+            server()
+            setConfigName("fabric_server")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+
+    mixin {
+        defaultRefmapName = "kubejs_lcae.mixin.refmap.json"
+    }
+}
+
+repositories {
+	maven {
+		name "ParchmentMC"
+		url "https://maven.parchmentmc.org"
+	}
+}
+
+dependencies {
+    // Mod
+    minecraft "com.mojang:minecraft:${mc_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mc_version}:${parchment_version}@zip")
+    }
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}+${mc_version}"
+
+    // Implementation
+	modImplementation "dev.latvian.mods:kubejs-fabric:${kubejs_version}"
+	modImplementation "dev.latvian.mods:rhino-fabric:${rhino_version}"
+	modImplementation "dev.architectury:architectury-fabric:${architectury_version}"
+
+    // Runtiem Only
+    modRuntimeOnly "curse.maven:badpackets-615134:${badpackets_file}"
+    modRuntimeOnly "curse.maven:wthit-440979:${wthit_file}"
+}

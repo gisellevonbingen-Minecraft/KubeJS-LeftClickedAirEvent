@@ -1,0 +1,74 @@
+allprojects {
+    apply plugin: "java"
+    apply plugin: "maven-publish"
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    archivesBaseName = rootProject.archives_base_name
+    version = "${rootProject.mc_version}-${rootProject.mod_version}"
+    group = rootProject.maven_group
+
+	repositories {
+        maven {
+            name "CurseForge"
+            url "https://www.cursemaven.com"
+			content {
+				includeGroup "curse.maven"
+			}
+        }
+		maven {
+			// Shedaniel's maven (Architectury API)
+			url = "https://maven.architectury.dev"
+			content {
+				includeGroup "dev.architectury"
+			}
+		}
+		maven {
+			// saps.dev Maven (KubeJS and Rhino)
+			url = "https://maven.saps.dev/minecraft"
+			content {
+				includeGroup "dev.latvian.mods"
+			}
+		}
+	}
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    def resourceTargets = ["META-INF/mods.toml", "fabric.mod.json"]
+    def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/${project.name}/bin/main/"]
+    def replaceProperties = [mc_version: mc_version,
+        mod_version: mod_version, mod_name: mod_name, mod_description: mod_description, mod_license: mod_license, mod_homepage: mod_homepage, mod_source: mod_source, mod_issues: mod_issues,
+        fabric_api_version: fabric_api_version, fabric_loader_version: fabric_loader_version,
+        forge_api_version: forge_api_version, forge_loader_version: forge_loader_version,
+        kubejs_version: kubejs_version, rhino_version: rhino_version, architectury_version: architectury_version
+    ]
+
+    processResources {
+        inputs.properties replaceProperties
+        replaceProperties.put "project", project
+
+        filesMatching(resourceTargets) {
+            expand replaceProperties
+        }
+
+        intoTargets.each { target ->
+            if (file(target).exists()) {
+                copy {
+                    from(sourceSets.main.resources) {
+                        include resourceTargets
+                        expand replaceProperties
+                    }
+                    into target
+                }
+            }
+        }
+    }
+}

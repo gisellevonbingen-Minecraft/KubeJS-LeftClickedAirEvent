@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "kubejs_lcae",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
+	"authors": [
+		"gisellevonbingen"
+	],
+	"contact": {
+		"homepage": "${mod_homepage}",
+		"sources": "${mod_source}",
+		"issues": "${mod_issues}"
+	},
+	"license": "${mod_license}",
+	"icon": "icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"giselle.kubejs_lcae.common.KubeJSLeftClickEventFabric"
+		]
+	},
+	"mixins": [
+		"kubejs_lcae.mixin.common.json"
+	],
+	"depends": {
+		"fabric": "*",
+		"minecraft": ">=${mc_version}",
+		"kubejs": ">=${kubejs_version}"
+	}
+}
